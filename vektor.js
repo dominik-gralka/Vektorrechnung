@@ -18,7 +18,7 @@ function getStützvektor(number) {
         let x = prompt("Stützvektor " + number +" (x): ");
         let y = prompt("Stützvektor " + number +" (y): ");
         let z = prompt("Stützvektor " + number +" (z): ");
-        return [x, y, z];
+        return [parseInt(x), parseInt(y), parseInt(z)];
     } else {
         return null;
     }
@@ -28,7 +28,7 @@ function getRichtungsvektor(number) {
     let x = prompt("Richtungsvektor " + number +" (x): ");
     let y = prompt("Richtungsvektor " + number +" (y): ");
     let z = prompt("Richtungsvektor " + number +" (z): ");
-    return [x, y, z];
+    return [parseInt(x), parseInt(y), parseInt(z)];
 }
 
 function askVektor() {
@@ -72,23 +72,44 @@ function options() {
     console.log("Optionen:");
     console.log("1: Skalarprodukt berechnen");
     console.log("2: Lagebeziehung berechnen");
-    console.log("3: Vektoren ändern");
-    console.log("4: Komplettanalyse");
+    console.log("3: Schnittpunkt berechnen");
+    console.log("4: Vektoren ändern");
+    console.log("5: Komplettanalyse");
     console.log(" ");
-    let option = prompt("Wählen Sie eine Option (1-4): ");
+    let option = prompt("Wählen Sie eine Option (1-5): ");
     console.log(" ");
     if (option == "1") skalarprodukt(v1.richtung, v2.richtung);
     else if (option == "2") {
         lagebeziehung(v1, v2);
     }
     else if (option == "3") {
+        schnittpunkt(v1, v2);
+    }
+    else if (option == "4") {
         askVektor();
         options();
     }
-    else if (option == "4") {
+    else if (option == "5") {
         skalarprodukt(v1.richtung, v2.richtung);
-        lagebeziehung(v1, v2);
+        schnittpunkt(v1, v2);
     }
+}
+
+function schnittpunkt(v1, v2) {
+    let r = lagebeziehung(v1, v2);
+
+    if (r == true) {
+        console.log("Schnittpunkt: Die Geraden sind identisch.");
+    } else if (r == false) {
+        console.log("Schnittpunkt: N/A");
+    } else {
+        let a = v1.stütz[0] + r * v1.richtung[0];
+        let b = v1.stütz[1] + r * v1.richtung[1];
+        let c = v1.stütz[2] + r * v1.richtung[2];
+        console.log("Schnittpunkt: [" + a + ", " + b + ", " + c + "]");
+        return [a, b, c];
+    }
+
 }
 
 function richtung(v1, v2) {
@@ -112,18 +133,18 @@ function wos(v1, v2) {
 
     let result = linear.solve(matrix, solutions);
     
-    let c1 = parseInt(v1.stütz[0]) + (result[0] * (v1.richtung[0]));
-    let cc1 = parseInt(v2.stütz[0]) + (result[1] * (v2.richtung[0]));
+    let c1 = v1.stütz[0] + (result[0] * (v1.richtung[0]));
+    let cc1 = v2.stütz[0] + (result[1] * (v2.richtung[0]));
 
-    let c2 = parseInt(v1.stütz[1]) + (result[0] * (v1.richtung[1]));
-    let cc2 = parseInt(v2.stütz[1]) + (result[1] * (v2.richtung[1]));
+    let c2 = v1.stütz[1] + (result[0] * (v1.richtung[1]));
+    let cc2 = v2.stütz[1] + (result[1] * (v2.richtung[1]));
 
-    let c3 = parseInt(v1.stütz[2]) + (result[0] * (v1.richtung[2]));
-    let cc3 = parseInt(v2.stütz[2]) + (result[1] * (v2.richtung[2]));
+    let c3 = v1.stütz[2] + (result[0] * (v1.richtung[2]));
+    let cc3 = v2.stütz[2] + (result[1] * (v2.richtung[2]));
     
     if (c1 == cc1 && c2 == cc2 && c3 == cc3) {
         console.log("Lagebeziehung: Ungleiche Richtung & Schneidend");
-        return true;
+        return c1;
     } else {
         console.log("Lagebeziehung: Ungleiche Richtung & Windschief");
         return false;
@@ -163,9 +184,9 @@ function lagebeziehung(v1, v2) {
         let r = richtung(v1, v2);
 
         if (r) {
-            identisch(v1, v2);
+            return identisch(v1, v2);
         } else {
-            wos(v1, v2);
+            return wos(v1, v2);
         }
     }
 
