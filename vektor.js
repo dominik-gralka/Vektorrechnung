@@ -73,35 +73,61 @@ function options() {
     console.log("1: Skalarprodukt berechnen");
     console.log("2: Lagebeziehung berechnen");
     console.log("3: Schnittpunkt berechnen");
-    console.log("4: Vektoren ändern");
-    console.log("5: Komplettanalyse");
+    console.log("4: Vektorlänge berechnen");
+    console.log("5: Zwischenliegender Winkel berechnen");
+    console.log("6: Vektoren ändern");
+    console.log("7: Komplettanalyse");
     console.log(" ");
-    let option = prompt("Wählen Sie eine Option (1-5): ");
+    let option = prompt("Wählen Sie eine Option (1-7): ");
     console.log(" ");
     if (option == "1") skalarprodukt(v1.richtung, v2.richtung);
     else if (option == "2") {
-        lagebeziehung(v1, v2);
+        lagebeziehungConsole(v1, v2);
     }
     else if (option == "3") {
         schnittpunkt(v1, v2);
     }
     else if (option == "4") {
+        console.log("Länge der beiden Vektoren (v1, v2): " + länge(v1, v2));
+    }
+    else if (option == "5") {
+        console.log("Zwischenliegender Winkel: " + winkel(v1, v2) + "°");
+    }
+    else if (option == "6") {
         askVektor();
         options();
     }
-    else if (option == "5") {
+    else if (option == "7") {
         skalarprodukt(v1.richtung, v2.richtung);
+        lagebeziehungConsole(v1, v2);
         schnittpunkt(v1, v2);
+        console.log("Zwischenliegender Winkel: " + winkel(v1, v2) + "°");
+        console.log("Länge der beiden Vektoren (v1, v2): " + länge(v1, v2));
     }
 }
 
-function schnittpunkt(v1, v2) {
-    let r = lagebeziehung(v1, v2);
+function winkel(v1, v2) {
+    let a = v1.richtung[0] * v2.richtung[0];
+    let b = v1.richtung[1] * v2.richtung[1];
+    let c = v1.richtung[2] * v2.richtung[2];
+    let d = a + b + c;
 
-    if (r == true) {
-        console.log("Schnittpunkt: Die Geraden sind identisch.");
-    } else if (r == false) {
-        console.log("Schnittpunkt: N/A");
+    let winkel = parseFloat(Math.acos(d / (länge(v1, v2)[0] * länge(v1, v2)[1])).toFixed(2));
+
+    return winkel;
+}
+
+function länge(v1, v2) {
+    let a = parseFloat(Math.sqrt(v1.richtung[0] ** 2 + v1.richtung[1] ** 2 + v1.richtung[2] ** 2).toFixed(2));
+    let b = parseFloat(Math.sqrt(v2.richtung[0] ** 2 + v2.richtung[1] ** 2 + v2.richtung[2] ** 2).toFixed(2));
+    return [a, b];
+}
+
+function schnittpunkt(v1, v2) {
+    let r = lagebeziehung(v1, v2)[0];
+
+    if (r == true || r == false) {
+        console.log("Schnittpunkt: NaN");
     } else {
         let a = v1.stütz[0] + r * v1.richtung[0];
         let b = v1.stütz[1] + r * v1.richtung[1];
@@ -143,11 +169,10 @@ function wos(v1, v2) {
     let cc3 = v2.stütz[2] + (result[1] * (v2.richtung[2]));
     
     if (c1 == cc1 && c2 == cc2 && c3 == cc3) {
-        console.log("Lagebeziehung: Ungleiche Richtung & Schneidend");
-        return c1;
+        //console.log("Lagebeziehung: Ungleiche Richtung & Schneidend");
+        return [c1];
     } else {
-        console.log("Lagebeziehung: Ungleiche Richtung & Windschief");
-        return false;
+        return [false, "Ungleiche Richtung & Windschief"];
     }
 
 }
@@ -159,11 +184,9 @@ function identisch(v1, v2) {
     let c = (v2.stütz[2] - v1.stütz[2]) / v1.richtung[2];
 
     if (a == b && b == c) {
-        console.log("Lagebeziehung: Gleiche Richtung & Identisch");
-        return true;
+        return [true, "Gleiche Richtung & Identisch"];
     } else {
-        console.log("Lagebeziehung: Gleiche Richtung & Parallel");
-        return false;
+        return [false, "Gleiche Richtung & Parallel"];
     }
 
 } 
@@ -190,6 +213,15 @@ function lagebeziehung(v1, v2) {
         }
     }
 
+}
+
+function lagebeziehungConsole(v1, v2) {
+    let a = lagebeziehung(v1, v2);
+        if (a[0] == true || a[0] == false) {
+            console.log("Lagebeziehung: " + a[1]);
+        } else {
+            console.log("Lagebeziehung: Ungleiche Richtung & Schneidend");
+        }
 }
 
 getCache();
