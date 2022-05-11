@@ -33,13 +33,13 @@ function getRichtungsvektor(number) {
 
 function askVektor() {
     v1 = {
-        "richtung": getRichtungsvektor(1),
-        "stütz": getStützvektor(1)
+        "stütz": getStützvektor(1),
+        "richtung": getRichtungsvektor(1)
     }
     
     v2 = {
-        "richtung": getRichtungsvektor(2),
-        "stütz": getStützvektor(2)
+        "stütz": getStützvektor(2),
+        "richtung": getRichtungsvektor(2)
     }
 
     saveVektor(v1, v2);
@@ -49,7 +49,7 @@ function getCache() {
     if (fs.existsSync("cache.json")) {
         let cache = JSON.parse(fs.readFileSync("cache.json"));
 
-        if (cache.v1.stütz == null || cache.v2.stütz == null) {
+        if (cache.v1.richtung == null || cache.v2.richtung == null) {
             askVektor();
             console.log(v1, v2);
         } else {
@@ -112,7 +112,7 @@ function winkel(v1, v2) {
     let c = v1.richtung[2] * v2.richtung[2];
     let d = a + b + c;
 
-    let winkel = parseFloat(Math.acos(d / (länge(v1, v2)[0] * länge(v1, v2)[1])).toFixed(2));
+    let winkel = parseFloat(Math.acos(d / (länge(v1, v2)[0] * länge(v1, v2)[1])) / (2 * Math.PI / 360)).toFixed(2);
 
     return winkel;
 }
@@ -124,16 +124,19 @@ function länge(v1, v2) {
 }
 
 function schnittpunkt(v1, v2) {
-    let r = lagebeziehung(v1, v2)[0];
+    let lg = lagebeziehung(v1, v2)[0];
 
-    if (r == true || r == false) {
-        console.log("Schnittpunkt: NaN");
-    } else {
+    let r = lg[0];
+    let s = lg[1];
+
+    if (typeof(lg) == "object") {
         let a = v1.stütz[0] + r * v1.richtung[0];
         let b = v1.stütz[1] + r * v1.richtung[1];
         let c = v1.stütz[2] + r * v1.richtung[2];
         console.log("Schnittpunkt: [" + a + ", " + b + ", " + c + "]");
         return [a, b, c];
+    } else {
+        console.log("Schnittpunkt: NaN");
     }
 
 }
@@ -170,7 +173,7 @@ function wos(v1, v2) {
     
     if (c1 == cc1 && c2 == cc2 && c3 == cc3) {
         //console.log("Lagebeziehung: Ungleiche Richtung & Schneidend");
-        return [c1];
+        return [result];
     } else {
         return [false, "Ungleiche Richtung & Windschief"];
     }
