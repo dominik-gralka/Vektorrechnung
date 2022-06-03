@@ -18,7 +18,7 @@ function getStützvektor(number) {
         let x = prompt("Stützvektor " + number +" (x): ");
         let y = prompt("Stützvektor " + number +" (y): ");
         let z = prompt("Stützvektor " + number +" (z): ");
-        return [parseInt(x), parseInt(y), parseInt(z)];
+        return [parseFloat(x), parseFloat(y), parseFloat(z)];
     } else {
         return null;
     }
@@ -28,7 +28,7 @@ function getRichtungsvektor(number) {
     let x = prompt("Richtungsvektor " + number +" (x): ");
     let y = prompt("Richtungsvektor " + number +" (y): ");
     let z = prompt("Richtungsvektor " + number +" (z): ");
-    return [parseInt(x), parseInt(y), parseInt(z)];
+    return [parseFloat(x), parseFloat(y), parseFloat(z)];
 }
 
 function askVektor() {
